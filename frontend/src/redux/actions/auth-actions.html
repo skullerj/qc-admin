@@ -1,0 +1,100 @@
+<script>
+  AuthMixin = (superclass) => {
+    return class extends superclass {
+      constructor(){
+        super();
+      }
+      static get actions(){
+        return {
+          logIn : (provider,body,callback) =>{
+            return (dispatch) =>{
+              dispatch({type :'LOG_IN'});
+              let url = '/auth/'+provider;
+              if(provider!=='local'){
+                url+='/callback';
+              }else{
+                url+='/login';
+              }
+              const headerson = new Headers({
+                'Content-Type': 'application/json'
+              });
+              let request = new Request(url,{
+                method:'POST',
+                headers: headerson,
+                body:JSON.stringify(body),
+                credentials: 'include'
+              });
+              window.fetch(request)
+              .then(handleReqError)
+              .then((response)=>{
+                response.json().then((json)=>{
+                  dispatch({type:'LOG_IN',status:'success',info:json});
+                  callback(null,json);
+                });
+              })
+              .catch((e)=>{
+                dispatch({type:'LOG_IN',status:'error',error:e});
+                callback(e);
+              });
+            }
+          },
+          register:(provider,body,callback)=>{
+            return (dispatch)=>{
+              dispatch({type:'REGISTER'});
+              let url = '/auth/'+provider+'/register';
+              let request = new Request(url,{
+                method:'POST',
+                headers: standardHeaders,
+                body: JSON.stringify(body),
+                credentials: 'include'
+              });
+              window.fetch(request)
+              .then(handleReqError)
+              .then((response)=>{
+                response.json().then((json)=>{
+                  dispatch({type:'REGISTER',status:'success',info:json});
+                  callback(null,json);
+                });
+              })
+              .catch((e)=>{
+                dispatch({type:'REGISTER',status:'error',error:e});
+                callback(e);
+              });
+            };
+          },
+          loadInfo:(callback)=>{
+            return (dispatch)=>{
+              dispatch({type:'LOAD_INFO'});
+              let url = '/user/info';
+              let request = new Request(url,{
+                method:'GET',
+                headers: standardHeaders,
+                credentials: 'include'
+              });
+              window.fetch(request)
+              .then(handleReqError)
+              .then((response)=>{
+                response.json().then((json)=>{
+                  dispatch({type:'LOAD_INFO',status:'success',info:json});
+                  callback(null,json);
+                });
+              })
+              .catch((e)=>{
+                dispatch({type:'LOAD_INFO',status:'error',error:e});
+                callback(e);
+              });
+            };
+          },
+          loadRegisterInfo:(info)=>{
+            return {type:'LOAD_REGISTER_INFO',info:info};
+          },
+          changeRegisterUserType:(type)=>{
+            return {type:'CHANGE_REGISTER_TYPE',type:type};
+          }
+        }
+      }
+
+
+    }
+  };
+</script>

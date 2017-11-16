@@ -1,0 +1,112 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/app-localize-behavior/app-localize-behavior.html">
+<link rel="import" href="../redux/global-store.html">
+<link rel="import" href="../redux/actions/auth-actions.html">
+<link rel="import" href="../shared-styles.html">
+
+<dom-module id="login-form">
+  <template>
+    <style include="shared-styles">
+      :host{
+        display: block;
+      }
+      paper-card{
+        background-color: #fff;
+      }
+      div.overlay{
+        background-color: rgba(0,0,0,0.25);
+        height: 90%;
+        width: 100%;
+        position: absolute;
+        z-index: 100;
+      }
+      paper-card{
+        min-width:300px;
+        --paper-card-background-color:#fff;
+        --paper-card-header-color:#fff;
+        --paper-card-header: {
+          background-color:var(--accent-color);
+        }
+      }
+    </style>
+    <paper-card heading="[[localize('log_in')]]">
+      <div class="overlay vertical center" hidden$="[[!loading]]">
+        <paper-spinner active></paper-spinner>
+      </div>
+      <div class="card-content">
+        <span class="text-secondary">[[localize('or_login')]]</span>
+        <iron-form id="loginForm">
+          <form>
+            <paper-input name="identifier" label="[[localize('email')]]" type="text" pattern="^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$" error-message="[[localize('invalid_email')]]" required auto-validate></paper-input>
+            <paper-input name="password" label="[[localize('password')]]" type="password" required auto-validate error-message="[[localize('must_fillout')]]"></paper-input>
+          </form>
+        </iron-form>
+      </div>
+      <div class="card-actions vertical">
+        <paper-button on-click="login" class="accent self-end">[[localize('log_in')]]</paper-button>
+      </div>
+    </paper-card>
+  </template>
+  <script>
+    class LoginForm extends GlobalStoreMixin(AuthMixin(Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],Polymer.Element))){
+      static get is() {return 'login-form';}
+      static get properties() {
+        return {
+          loading:{
+            type:Boolean,
+            value:false
+          },
+          language: {
+            value: 'es'
+          },
+          resources: {
+            value : ()=> {
+              return {
+                'es' : {
+                    'log_in' : 'Ingresar',
+                    'password' : 'Contraseña',
+                    'email' : 'Correo Electrónico',
+                    'invalid_email' : 'Debe ser una dirección de correo válida',
+                    'start_sess' : 'Iniciar Sesión',
+                    'must_fillout': 'Debe llenar la forma',
+                    'or_login' : 'O inicia sesión con tu dirección de correo',
+                    'email_or_pass_invalid' : 'Correo o contraseña incorrectos.',
+                    'need_register' : 'Debes registrarte primero',
+                    'err_with_google':'Hubo un error autenticandote con Google.',
+                    'err_with_fb':'Hubo un error autenticandote con Facebook.'
+                },
+                'en' : {
+                    'log_in' : 'Log in',
+                    'password' : 'Password',
+                    'email' : 'Email',
+                    'invalid_email' : 'Must be a valid email address',
+                    'start_sess' : 'Log in',
+                    'must_fillout': 'Must fill this field',
+                    'or_login': 'Or login with your email',
+                    'email_or_pass_invalid' : 'Wrong email or password.',
+                    'need_register' : 'Debes registrarte primero',
+                    'err_with_google':'There was a problem with Google\'s authentication.',
+                    'err_with_fb':'There was a problem with Facebook\'s authentication.'
+
+                }
+              }
+            }
+          }
+        };
+      }
+
+      login(){
+        var form = this.$.loginForm;
+        if(form.validate()){
+          this.dispatch('logIn','local',form.serializeForm(),(err)=>{
+            if(err) return showMessage(this.localize(err.message));
+            this.dispatchEvent(new CustomEvent('login',{bubbles:false,composed:false}));
+          });
+        }
+      }
+    customElements.define(LoginForm.is, LoginForm);
+  </script>
+</dom-module>

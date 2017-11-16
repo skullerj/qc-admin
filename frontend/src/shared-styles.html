@@ -1,0 +1,187 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+
+<!-- shared styles for all views -->
+<dom-module id="shared-styles">
+  <template>
+    <style>
+      app-drawer-layout:not([narrow]) [drawer-toggle] {
+        display: none;
+      }
+      .drawer-list {
+        margin: 0 20px;
+      }
+      [hidden]{
+        display: none !important;
+      }
+      .drawer-list a {
+        display: block;
+        padding: 0 16px;
+        text-decoration: none;
+        color: var(--secondary-text-color);
+        line-height: 40px;
+      }
+
+      .drawer-list a.iron-selected {
+        color: black;
+        font-weight: bold;
+      }
+      app-header {
+        color: #fff;
+        background-color: var(--primary-color);
+      }
+      paper-button.primary{
+        color: var(--primary-color);
+      }
+      paper-button.primary[raised]{
+        background-color: var(--primary-color);
+        color: #fff;
+      }
+      paper-button.accent{
+        color: var(--accent-color);
+      }
+      paper-button.accent[raised]{
+        background-color: var(--accent-color);
+        color: #fff;
+      }
+      app-toolbar paper-button{
+        font-size: 14px;
+      }
+      a paper-button {
+        color: #fff;
+      }
+      a, a:active, a:visited, a:focus { color: var(--accent-color); text-decoration: none; }
+      a:hover { color: var(--accent-color); text-decoration: none; }
+      .vertical{
+        @apply(--layout-vertical);
+      }
+      .horizontal{
+        @apply(--layout-horizontal);
+      }
+      .center{
+        @apply(--layout-center-center);
+      }
+      .flex{
+        @apply(--layout-flex);
+      }
+      .self-start{
+        @apply(--layout-self-start);
+      }
+      .self-end{
+        @apply(--layout-self-end);
+      }
+      .self-center{
+        @apply(--layout-self-center);
+      }
+      paper-card{
+        --paper-input-container-color:       rgba(0, 0, 0, 0.64);
+        --paper-input-container-focus-color: rgba(0, 0, 0, 1);
+        --paper-input-container-input-color: #000;
+      }
+      .font-caption{
+        @apply(--paper-font-caption);
+      }
+      .font-title{
+        @apply(--paper-font-title);
+      }
+      .font-display1{
+        @apply(--paper-font-display1);
+      }
+      .font-display2{
+        @apply(--paper-font-display2);
+      }
+      .font-display3{
+        @apply(--paper-font-display3);
+      }
+      .font-display4{
+        @apply(--paper-font-display4);
+      }
+      .text-secondary{
+        color:var(--secondary-text-color);
+      }
+      .m1{
+        margin: 1rem;
+      }
+      .m1-x{
+        margin: 0 1rem;
+      }
+      .m1-y{
+        margin: 1rem 0;
+      }
+      .m2{
+        margin: 2rem;
+      }
+      .m2-x{
+        margin: 0 2rem;
+      }
+      .m2-y{
+        margin: 2rem 0;
+      }
+      .m3{
+        margin: 3rem;
+      }
+      .m3-x{
+        margin: 0 3rem;
+      }
+      .m3-y{
+        margin: 3rem 0;
+      }
+      .p1{
+        padding: 1rem;
+      }
+      .p1-x{
+        padding: 0 1rem;
+      }
+      .p1-y{
+        padding: 1rem 0;
+      }
+      .p2{
+        padding: 2rem;
+      }
+      .p2-x{
+        padding: 0 2rem;
+      }
+      .p2-y{
+        padding: 2rem 0;
+      }
+      .p3{
+        padding: 3rem;
+      }
+      .p3-x{
+        padding: 0 3rem;
+      }
+      .p3-y{
+        padding: 3rem 0;
+      }
+
+      /*htv(horizontal-to-vertical) class makes the element change from a vertical layout to an horizontal one on small screens */
+      .htv{
+        @apply(--layout-horizontal);
+      }
+      @media screen and (max-width:760px){
+        .htv{
+          @apply(--layout-vertical);
+        }
+        /*fos(flex-on-small) class apply flex behavior on small screens*/
+        .fos{
+          @apply(--layout-flex);
+        }
+      }
+      @media screen and (min-width:761px){
+        /*fob(flex-on-big) class apply flex behavior on big screens*/
+        .fob{
+          @apply(--layout-flex);
+        }
+      }
+    </style>
+  </template>
+</dom-module>
