@@ -21,21 +21,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <style include="shared-styles">
       :host {
         display: block;
-        padding: 10px;
       }
       .main{
+        height: 90vh;
         @apply --layout-vertical;
         @apply --layout-center-center;
       }
     </style>
-    <app-header-layout has-scrolling-region>
-      <app-header slot="header" condenses reveals effects="waterfall">
-        <app-toolbar>
-          <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
+    <app-header-layout>
+      <app-header slot="header">
+        <app-toolbar class="horizontal">
           <div main-title class="horizontal">
-            <iron-image src="/images/ehr.png" preload sizing="cover" class="icon"></iron-image>
             <span class="logo">Dinabun</span>
           </div>
+          <div class="flex"></div>
+          <a href="/account" hidden="[[!user.authenticated]]">
+            <paper-button raised class="accent"> Consola</paper-button>
+          </a>
         </app-toolbar>
       </app-header>
       <div class="main">
@@ -51,11 +53,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       static get properties(){
         return {
-          subPage:{
-            type:String,
-            reflectToAttribute:true,
-            observer:'_subPageChanged'
-          },
           user:{
             type:Object,
             statePath:'user'
@@ -64,36 +61,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
       connectedCallback(){
         super.connectedCallback();
-        if(checkLogIn()){
-          this.dispatch('loadInfo',(e,user)=>{
-            if(e){
-              showMessage('Hubo un error obteniendo tu información. Recarga la página.')
-            }else{
-              showMessage('Bienvenido '+user.firstName);
-            }
-          });
-        }
-      }
-      _subPageChanged(subPage){
-        var resolvedPageUrl = this.resolveUrl('main/'+ subPage + '-view.html');
-        Polymer.importHref(
-            resolvedPageUrl,
-            null,
-            this._subPageNotFound.bind(this),
-            true);
       }
 
-      _subPageNotFound(){
-        // Something with fetching the subPage was
-        this.dispatchEvent(new CustomEvent('subpage-not-found', { bubbles: true, composed: true }));
-      }
-
-      openDialog(){
-        this.$.dialog.open();
-      }
-      closeDialog(){
-        this.$.dialog.close();
-      }
     }
     window.customElements.define(MainView.is, MainView);
   </script>

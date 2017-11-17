@@ -45,9 +45,13 @@ module.exports = {
     *    (See https://sailsjs.com/config/datastores for help.)                 *
     *                                                                          *
     ***************************************************************************/
-    mongodbServer: {
+    appDatabase: {
       adapter: require('sails-mongo'),
-      url: process.env.MONGODB_URI
+      url: process.env.APP_DATABASE
+    },
+    adminDatabase:{
+      adapter: require('sails-mongo'),
+      url: process.env.ADMIN_DATABASE
     }
     //--------------------------------------------------------------------------
     //  /\   To avoid checking it in to version control, you might opt to set

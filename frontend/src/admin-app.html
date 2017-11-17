@@ -9,12 +9,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
-<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
-<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
 <link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
 <link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
-<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
-<link rel="import" href="../bower_components/app-layout/app-grid/app-grid-style.html">
 <link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
@@ -41,16 +37,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <script src="../bower_components/redux.min/index.js"></script>
 <script src="../bower_components/redux-thunk.min/index.js"></script>
 
-<dom-module id="ehr-app">
+<link rel="import" href="redux/global-store.html">
+<link rel="import" href="redux/actions/auth-actions.html">
+<dom-module id="admin-app">
   <template>
     <style>
 
       :host {
-        --dark-primary-color:       #455A64;
-        --primary-color:            #607D8B;
-        --light-primary-color:      #CFD8DC;
+        --dark-primary-color:       #002984;
+        --primary-color:            #3f51b5;
+        --light-primary-color:      #757de8;
         --text-primary-color:       #FFFFFF;
-        --accent-color:             #f44336;
+        --accent-color:             #00bfa5;
         --primary-background-color: #CFD8DC;
         --primary-text-color:       #212121;
         --secondary-text-color:     #757575;
@@ -101,9 +99,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </template>
 
   <script>
-    class EhrApp extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],Polymer.Element) {
+    class AdminApp extends GlobalStoreMixin(Polymer.Element) {
 
-      static get is() { return 'ehr-app'; }
+      static get is() { return 'admin-app'; }
 
       static get properties() {
         return {
@@ -112,27 +110,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             reflectToAttribute: true,
             observer: '_pageChanged',
           },
+          user:{
+            type:Object,
+            statePath:(state)=>{
+              return state.user;
+            },
+            value:()=>{
+              return {}
+            }
+          },
           rootPattern: String,
           routeData: Object,
           subroute: String,
           subPage:String,
-          language: {
-            value : 'es'
-          },
-          resources: {
-            value : ()=> {
-              return {
-                'es' : {
-                    'login_error' : 'Correo o contraseña invalidas',
-
-                },
-                'en' : {
-                    'login_error' : 'Wrong email or password',
-
-                }
-              }
-            }
-          }
         };
       }
 
@@ -155,19 +145,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           toast.show();
         });
       }
-
       _routePageChanged(page) {
         // Polymer 2.0 will call with `undefined` on initialization.
         // Ignore until we are properly called with a string.
         if (page === undefined) {
           return;
         }
-        this.page = page || 'main';
-
+        var newPage = page || 'main';
+        if(!this.user.authenticated&&checkLogIn()){
+          this.dispatch({type:'LOG_IN',status:'success'});
+        }else{
+          if(newPage!=='main'&&!this.user.authenticated){
+            newPage='main';
+          }
+        }
+        this.page = newPage;
       }
 
       _pageChanged(page) {
-
         // Load page import on demand. Show 404 page if fails
         var resolvedPageUrl = this.resolveUrl('fragments/'+ page + '-view.html');
         Polymer.importHref(
@@ -182,6 +177,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     }
 
-    window.customElements.define(EhrApp.is, EhrApp);
+    window.customElements.define(AdminApp.is, AdminApp);
   </script>
 </dom-module>

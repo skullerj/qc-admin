@@ -6,61 +6,29 @@
       }
       static get actions(){
         return {
-          logIn : (provider,body,callback) =>{
+          logIn : (username,password,callback) =>{
             return (dispatch) =>{
               dispatch({type :'LOG_IN'});
-              let url = '/auth/'+provider;
-              if(provider!=='local'){
-                url+='/callback';
-              }else{
-                url+='/login';
-              }
-              const headerson = new Headers({
-                'Content-Type': 'application/json'
-              });
-              let request = new Request(url,{
+              let request = new Request('/login',{
                 method:'POST',
-                headers: headerson,
-                body:JSON.stringify(body),
+                headers: standardHeaders,
+                body:JSON.stringify({
+                  username:username,
+                  password:password
+                }),
                 credentials: 'include'
               });
               window.fetch(request)
               .then(handleReqError)
               .then((response)=>{
-                response.json().then((json)=>{
-                  dispatch({type:'LOG_IN',status:'success',info:json});
-                  callback(null,json);
-                });
+                dispatch({type:'LOG_IN',status:'success'});
+                callback(null);
               })
               .catch((e)=>{
                 dispatch({type:'LOG_IN',status:'error',error:e});
-                callback(e);
+                callback(e.message);
               });
             }
-          },
-          register:(provider,body,callback)=>{
-            return (dispatch)=>{
-              dispatch({type:'REGISTER'});
-              let url = '/auth/'+provider+'/register';
-              let request = new Request(url,{
-                method:'POST',
-                headers: standardHeaders,
-                body: JSON.stringify(body),
-                credentials: 'include'
-              });
-              window.fetch(request)
-              .then(handleReqError)
-              .then((response)=>{
-                response.json().then((json)=>{
-                  dispatch({type:'REGISTER',status:'success',info:json});
-                  callback(null,json);
-                });
-              })
-              .catch((e)=>{
-                dispatch({type:'REGISTER',status:'error',error:e});
-                callback(e);
-              });
-            };
           },
           loadInfo:(callback)=>{
             return (dispatch)=>{

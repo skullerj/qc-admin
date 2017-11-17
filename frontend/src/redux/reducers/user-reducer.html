@@ -1,26 +1,12 @@
 <script>
   const {user:userInit} = GlobalState;
-  const {info:userInfoInit} = userInit;
-  const {registerInfo:userRInfoInit} = userInit;
-  const registerInfo = (state=userRInfoInit,action)=>{
-    switch (action.type) {
-      case 'LOAD_REGISTER_INFO':
-        return Object.assign({},state,action.info);
-        break;
-      case 'CHANGE_REGISTER_TYPE':
-        return Object.assign({},state,{userType:action.type});
-        break;
-      default:
-      return state;
-    }
-  };
+
   const user = (state=userInit,action)=>{
     switch(action.type){
-      case 'REGISTER':
       case 'LOG_IN':
         switch (action.status) {
           case 'success':
-            return Object.assign({},state,{loading:false,authenticated:true,info:action.info});
+            return Object.assign({},state,{loading:false,authenticated:true});
             break;
           case 'error':
             return Object.assign({},state,{loading:false,lastError:action.error});
@@ -42,11 +28,6 @@
             return Object.assign({},state,{loading:true})
             break;
         }
-        break;
-
-      case 'LOAD_REGISTER_INFO':
-      case 'CHANGE_REGISTER_TYPE':
-        return Object.assign({},state,{registerInfo:registerInfo(state.registerInfo,action)});
         break;
       default:
       return state;

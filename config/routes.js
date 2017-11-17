@@ -9,5 +9,6 @@
  */
 
 module.exports.routes = {
-
+  '/login' : 'AdminController.login',
+  '/logout' : 'AdminController.logout'
 };

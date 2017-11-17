@@ -25,5 +25,6 @@ module.exports.custom = {
       name : 'local',
       protocol: 'local'
     }
-  }
+  },
+  mP: process.env.MASTER
 };
