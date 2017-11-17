@@ -73,6 +73,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       .flex{
         @apply(--layout-flex);
       }
+      .flex-2{
+        @apply(--layout-flex-2);
+      }
+      .flex-3{
+        @apply(--layout-flex-3);
+      }
+      .flex-4{
+        @apply(--layout-flex-4);
+      }
       .self-start{
         @apply(--layout-self-start);
       }
@@ -83,15 +92,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         @apply(--layout-self-center);
       }
       paper-card{
-        --paper-input-container-color:       rgba(0, 0, 0, 0.64);
-        --paper-input-container-focus-color: rgba(0, 0, 0, 1);
-        --paper-input-container-input-color: #000;
+        background-color: #fff;
       }
       .font-caption{
         @apply(--paper-font-caption);
       }
       .font-title{
         @apply(--paper-font-title);
+      }
+      .font-headline{
+        @apply(--paper-font-headline);
+      }
+      .font-subhead{
+        @apply(--paper-font-subhead);
       }
       .font-display1{
         @apply(--paper-font-display1);
@@ -105,62 +118,150 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       .font-display4{
         @apply(--paper-font-display4);
       }
-      .text-secondary{
-        color:var(--secondary-text-color);
+      .accent{
+        color:var(--accent-color);
+      }
+      .primary{
+        color:var(--primary-color);
+      }
+      .error{
+        color:var(--error-color);
+      }
+      /*text secondary*/
+      .s{
+        color:rgba(0,0,0,0.86);
       }
       .m1{
-        margin: 1rem;
+        margin: 0.5rem;
       }
       .m1-x{
-        margin: 0 1rem;
+        margin: 0 0.5rem;
       }
       .m1-y{
-        margin: 1rem 0;
+        margin: 0.5rem 0;
       }
       .m2{
-        margin: 2rem;
+        margin: 1rem;
       }
       .m2-x{
-        margin: 0 2rem;
+        margin: 0 1rem;
       }
       .m2-y{
-        margin: 2rem 0;
+        margin: 1rem 0;
       }
       .m3{
-        margin: 3rem;
+        margin: 1.5rem;
       }
       .m3-x{
-        margin: 0 3rem;
+        margin: 0 1.5rem;
       }
       .m3-y{
-        margin: 3rem 0;
+        margin: 1.5rem 0;
       }
       .p1{
-        padding: 1rem;
+        padding: 0.5rem;
       }
       .p1-x{
-        padding: 0 1rem;
+        padding: 0 0.5rem;
       }
       .p1-y{
-        padding: 1rem 0;
+        padding: 0.5rem 0;
       }
       .p2{
-        padding: 2rem;
+        padding: 1rem;
       }
       .p2-x{
-        padding: 0 2rem;
+        padding: 0 1rem;
       }
       .p2-y{
-        padding: 2rem 0;
+        padding: 1rem 0;
       }
       .p3{
-        padding: 3rem;
+        padding: 1.5rem;
       }
       .p3-x{
-        padding: 0 3rem;
+        padding: 0 1.5rem;
       }
       .p3-y{
-        padding: 3rem 0;
+        padding: 1.5rem 0;
+      }
+      .p1-t{
+        padding-top: 0.5rem;
+      }
+      .p2-t{
+        padding-top: 1rem;
+      }
+      .p3-t{
+        padding-top: 1.5rem;
+      }
+      .p1-b{
+        padding-bottom: 0.5rem;
+      }
+      .p2-b{
+        padding-bottom: 1rem;
+      }
+      .p3-b{
+        padding-bottom: 1.5rem;
+      }
+      .p1-l{
+        padding-left: 0.5rem;
+      }
+      .p2-l{
+        padding-left: 1rem;
+      }
+      .p3-l{
+        padding-left: 1.5rem;
+      }
+      .p1-r{
+        padding-right: 0.5rem;
+      }
+      .p2-r{
+        padding-right: 1rem;
+      }
+      .p3-r{
+        padding-right: 1.5rem;
+      }
+      .m1-t{
+        margin-top: 0.5rem;
+      }
+      .m2-t{
+        margin-top: 1rem;
+      }
+      .m3-t{
+        margin-top: 1.5rem;
+      }
+      .m1-b{
+        margin-bottom: 0.5rem;
+      }
+      .m2-b{
+        margin-bottom: 1rem;
+      }
+      .m3-b{
+        margin-bottom: 1.5rem;
+      }
+      .m1-l{
+        margin-left: 0.5rem;
+      }
+      .m2-l{
+        margin-left: 1rem;
+      }
+      .m3-l{
+        margin-left: 1.5rem;
+      }
+      .m1-r{
+        margin-right: 0.5rem;
+      }
+      .m2-r{
+        margin-right: 1rem;
+      }
+      .m3-r{
+        margin-right: 1.5rem;
+      }
+      .h-100{
+        height: 100%;
+      }
+      .w-100{
+        width: 100%;
       }
 
       /*htv(horizontal-to-vertical) class makes the element change from a vertical layout to an horizontal one on small screens */

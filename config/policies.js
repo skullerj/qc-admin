@@ -23,15 +23,15 @@ module.exports.policies = {
   *                                                                          *
   ***************************************************************************/
 
-  // '*': true,
-
-  AdminController:{
-    'create':[],
-    'login':[],
-    'logout':[],
-    '*':['isLoggedIn']
-  },
-  '*':['isLoggedIn']
+  '*': true,
+  // 
+  // AdminController:{
+  //   'create':[],
+  //   'login':[],
+  //   'logout':[],
+  //   '*':['isLoggedIn']
+  // },
+  // '*':['isLoggedIn']
   /***************************************************************************
   *                                                                          *
   * Here's an example of mapping some policies to run before a controller    *

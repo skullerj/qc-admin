@@ -46,6 +46,8 @@ module.exports.models = {
   *                                                                          *
   ***************************************************************************/
   attributes: {
+    createdAt: {type:'string'},
+    updatedAt: {type:'string'},
     id: { type: 'string', columnName: '_id' }
   },
 

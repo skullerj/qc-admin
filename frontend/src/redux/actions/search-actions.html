@@ -1,0 +1,46 @@
+<script>
+  SearchMixin = (superclass) => {
+    return class extends superclass {
+      constructor(){
+        super();
+      }
+      static get actions(){
+        return {
+          getStats:(callback)=>{
+            return (dispatch)=>{
+              let url = '/user/info';
+              let request = new Request(url,{
+                method:'GET',
+                headers: standardHeaders,
+                credentials: 'include'
+              });
+              window.fetch(request)
+              .then(handleReqError)
+              .then((response)=>{
+                response.json().then((json)=>{
+                  dispatch({type:'LOAD_INFO',status:'success',info:json});
+                  callback(null,json);
+                });
+              })
+              .catch((e)=>{
+                dispatch({type:'LOAD_INFO',status:'error',error:e});
+                callback(e);
+              });
+            };
+          },
+          searchUsers:()=>{
+
+          },
+          selectUser:()=>{
+
+          },
+          updateUserMr:()=>{
+
+          }
+        }
+      }
+
+
+    }
+  };
+</script>

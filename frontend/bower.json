@@ -39,8 +39,9 @@
     "paper-toast": "2.0-preview",
     "polymer-redux": "^1.0.1",
     "paper-radio-group": "PolymerElements/paper-radio-group#2.0-preview",
-    "paper-spinner": "PolymerElements/paper-spinner#2.0-preview",
-    "paper-dialog": "PolymerElements/paper-dialog#2.0-preview"
+    "paper-spinner": "PolymerElements/paper-spinner#^2.0.0",
+    "paper-dialog": "PolymerElements/paper-dialog#2.0-preview",
+    "paper-slider": "PolymerElements/paper-slider#^2.0.4"
   },
   "resolutions": {
     "polymer": "^2.0.0-rc.3",
@@ -55,7 +56,12 @@
     "iron-behaviors": "1 - 2",
     "iron-form-element-behavior": "1 - 2",
     "iron-validatable-behavior": "1 - 2",
-    "iron-checked-element-behavior": "1 - 2"
+    "iron-checked-element-behavior": "1 - 2",
+    "paper-input": "1 - 2",
+    "iron-autogrow-textarea": "1 - 2",
+    "iron-input": "1 - 2",
+    "iron-a11y-announcer": "1 - 2",
+    "paper-spinner": "^2.0.0"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#^6.0.0-prerelease.7"

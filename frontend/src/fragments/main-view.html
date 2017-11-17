@@ -38,6 +38,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <a href="/account" hidden="[[!user.authenticated]]">
             <paper-button raised class="accent"> Consola</paper-button>
           </a>
+          <a href="/logout" hidden="[[!user.authenticated]]" rel="external">
+            <paper-button class="accent"> Salir</paper-button>
+          </a>
         </app-toolbar>
       </app-header>
       <div class="main">
