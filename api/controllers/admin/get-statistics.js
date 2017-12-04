@@ -14,13 +14,13 @@ module.exports = {
 
   exits: {
     error:{
-      status:500
+      statusCode:500
     },
     success:{
-      status:200
+      statusCode:200
     },
     conflict:{
-      status:409
+      statusCode:409
     }
   },
 
@@ -53,6 +53,8 @@ module.exports = {
               return exits.error({message:'server_error'});
             }
             result.completePayments=completedPays;
+            result.totalCollected=(completedPays*0.01);
+            result.totalEarnings=(completedPays*0.0032);
             return exits.success(result);
           });
         });

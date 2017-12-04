@@ -1,3 +1,4 @@
+var ObjectID = require('mongodb').ObjectID;
 module.exports = {
 
 
@@ -17,19 +18,20 @@ module.exports = {
 
   exits: {
     error:{
-      status:500
+      statusCode:500
     },
     success:{
-      status:200
+      statusCode:200
     },
     conflict:{
-      status:409
+      statusCode:409
     }
   },
 
 
   fn: function (inputs, exits) {
-    User.findOne(inputs.id,(err,user)=>{
+    var users = User.getDatastore().manager.collection('user');
+    users.findOne({'_id':ObjectID(inputs.id)},(err,user)=>{
       if(err){
         console.error(err);
         return exits.error({message:'server_error'});
@@ -38,7 +40,7 @@ module.exports = {
         return exits.conflict({message:'user_not_found'});
       }
       var resultUser= {
-        id:user.id,
+        id:user._id.toHexString(),
         email:user.email,
         firstName:user.firstName,
         lastName:user.lastName,
@@ -46,17 +48,20 @@ module.exports = {
         maxReco:user.maxReco,
         balance:user.balance.reduce((total,value)=>{return value+total;},0)
       }
-      var recommendedIds=Object.keys(user.recommended);
+      var recommendedIds=Object.keys(user.recommended).reduce((ids,singleId)=>{
+        ids.push(ObjectID(singleId));
+        return ids;
+      },[]);
       if(recommendedIds.length>0){
         //Case: User has recommendeds
-        User.find(recommendedIds,(err,recommended)=>{
+        users.find({'_id':{'$in':recommendedIds}}).toArray((err,recommended)=>{
           if(err){
             console.error(err);
             return exits.error({message:'server_error'});
           }
           resultUser.recommended=recommended.map((item)=>{
             return {
-              id:item.id,
+              id:item._id.toHexString(),
               firstName:item.firstName,
               lastName:item.lastName,
               email:item.id
@@ -64,13 +69,13 @@ module.exports = {
           });
           if(user.recommender){
             //Case: user has recommededs and reccommender
-            User.findOne(user.recommender,(err,recommender)=>{
+            users.findOne({'_id':ObjectID(user.recommender)},(err,recommender)=>{
               if(err){
                 console.error(err);
                 return exits.error({message:'server_error'});
               }
               resultUser.recommender={
-                id:recommender.id,
+                id:recommender._id.toHexString(),
                 firstName:recommender.firstName,
                 lastName:recommender.lastName,
                 email:recommender.email
@@ -85,13 +90,13 @@ module.exports = {
       }else{
         if(user.recommender){
           //Case: User only has recommender
-          User.findOne(user.recommender,(err,recommender)=>{
+          users.findOne({'_id':ObjectID(user.recommender)},(err,recommender)=>{
             if(err){
               console.error(err);
               return exits.error({message:'server_error'});
             }
             resultUser.recommender={
-              id:recommender.id,
+              id:recommender._id.toHexString(),
               firstName:recommender.firstName,
               lastName:recommender.lastName,
               email:recommender.email

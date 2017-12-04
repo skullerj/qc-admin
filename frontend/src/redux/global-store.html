@@ -4,10 +4,8 @@
 <link rel="import" href="reducers/search-reducer.html">
 
 <script type="text/javascript">
-  const standardHeaders = new Headers({
-    'Content-Type': 'application/json'
-  });
   function handleReqError(response) {
+    console.log(response);
     if (response.ok) {
       return Promise.resolve(response);
     }
@@ -19,6 +17,28 @@
   function showMessage(message,duration){
      window.dispatchEvent(new CustomEvent('show-message',{'detail':{message : message, duration: duration}}),{bubbles:false});
   }
+  function requestCRSF(){
+    let request = new Request('/csrfToken',{
+      method:'GET',
+      headers: new Headers({'Content-Type':'application/json'})
+    });
+    window.fetch(request)
+    .then(handleReqError)
+    .then((response)=>{
+      response.json().then((json)=>{
+        console.log(json._csrf);
+        window.sh = new Headers({
+          'X-CSRF-Token': json['_csrf'],
+          'Content-Type': 'application/json'
+
+        });
+      });
+    })
+    .catch((e)=>{
+      showMessage('Hubo un error cargando la página. Por favor recárgala',10000);
+    });
+  }
+
   function redirect(location){
     window.history.pushState({}, null, location);
     window.dispatchEvent(new CustomEvent('location-changed'));
@@ -33,6 +53,7 @@
     });
     return found;
   }
+  requestCRSF();
   const globalReducer = (state=GlobalState,action)=>{
     return{
       user:user(state.user,action),

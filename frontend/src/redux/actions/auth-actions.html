@@ -11,10 +11,11 @@
               dispatch({type :'LOG_IN'});
               let request = new Request('/login',{
                 method:'POST',
-                headers: standardHeaders,
+                headers: sh,
                 body:JSON.stringify({
                   username:username,
-                  password:password
+                  password:password,
+                  _csrf:sh.get('X-CSRF-Token')
                 }),
                 credentials: 'include'
               });
@@ -25,6 +26,7 @@
                 callback(null);
               })
               .catch((e)=>{
+                console.log(e);
                 dispatch({type:'LOG_IN',status:'error',error:e});
                 callback(e.message);
               });
@@ -36,7 +38,7 @@
               let url = '/user/info';
               let request = new Request(url,{
                 method:'GET',
-                headers: standardHeaders,
+                headers: sh,
                 credentials: 'include'
               });
               window.fetch(request)

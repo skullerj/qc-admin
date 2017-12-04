@@ -1,4 +1,5 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/app-layout/app-grid/app-grid-style.html">
 <link rel="import" href="../../bower_components/app-layout/app-drawer/app-drawer.html">
 <link rel="import" href="../../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
 <link rel="import" href="../../bower_components/app-localize-behavior/app-localize-behavior.html">
@@ -7,12 +8,18 @@
 <link rel="import" href="../../bower_components/paper-slider/paper-slider.html">
 <link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
 <link rel="import" href="../shared-styles.html">
+<link rel="import" href="../redux/global-store.html">
+<link rel="import" href="../redux/actions/search-actions.html">
 
 <dom-module id="account-view">
   <template>
-    <style include="shared-styles">
+    <style include="shared-styles app-grid-style">
       :host {
         display: block;
+        --app-grid-columns: 4;
+        --app-grid-gutter: 12px;
+        --app-grid-expandible-item-columns: 2;
+        --app-grid-item-height: 50%;
       }
       div.card{
         @apply --shadow-elevation-2dp;
@@ -32,7 +39,7 @@
       div.results{
         max-height: 600px;
         overflow: auto;
-        margin-top: 8px;
+        margin-top: 12px;
       }
       div.results-top{
         padding: 8px;
@@ -46,6 +53,10 @@
       }
       div.result:nth-last-child(2){
         border-bottom: 0px;
+      }
+      span.link{
+        color: var(--accent-color);
+        cursor: pointer;
       }
     </style>
     <app-route
@@ -63,19 +74,50 @@
       </app-drawer>
       <div>
         <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="start" role="main">
-          <section name="start">
-            <span>Inicio</span>
+          <section name="start" class="vertical p2">
+            <div class="horizontal m1-b">
+              <span class="font-display1 flex">La página en números</span>
+              <paper-button raised class="accent" on-tap="searchStats">Refrescar</paper-button>
+            </div>
+            <div class="app-grid">
+              <div class="card vertical">
+                <span class="font-display2 s">[[stats.users]]</span>
+                <span class="font-title">Usuarios registrados</span>
+              </div>
+              <div class="card vertical">
+                <span class="font-display2 s">[[stats.subsUsers]]</span>
+                <span class="font-title">Usuarios suscritos</span>
+              </div>
+              <div class="card vertical">
+                <span class="font-display2 s">[[stats.payments]]</span>
+                <span class="font-title">Pagos recibidos</span>
+              </div>
+              <div class="card vertical">
+                <span class="font-display2 s">[[stats.completePayments]]</span>
+                <span class="font-title">Pagos confirmados</span>
+              </div>
+              <div class="card vertical">
+                <span class="font-display1 s">[[stats.totalCollected]] BCT</span>
+                <div class="flex">  </div>
+                <span class="font-title">Dinero recibido</span>
+              </div>
+              <div class="card vertical">
+                <span class="font-display1 s">[[stats.totalEarnings]] BCT</span>
+                <div class="flex">  </div>
+                <span class="font-title">Ganancias hasta ahora</span>
+              </div>
+            </div>
           </section>
-          <section name="users" class="p1 vertical">
+          <section name="users" class="p2 vertical">
             <span class="font-display1 self-start m1-b">Usuarios</span>
             <div class="horizontal">
               <div class="vertical flex">
                 <span class="font-headline s m1-b">Filtros</span>
                 <div class="card horizontal">
-                  <paper-input class="m1-r" label="Email"></paper-input>
-                  <paper-input class="m1-r" label="Nombre"></paper-input>
-                  <paper-input class="m1-r" label="Apellido"></paper-input>
-                  <paper-button raised class="accent self-center">Buscar</paper-button>
+                  <paper-input class="m1-r" label="Email" value="{{query.email}}"></paper-input>
+                  <paper-input class="m1-r" label="Nombre" value="{{query.firstName}}"></paper-input>
+                  <paper-input class="m1-r" label="Apellido" value="{{query.lastName}}"></paper-input>
+                  <paper-button raised class="accent self-center" on-tap="searchUsers">Buscar</paper-button>
                 </div>
                 <div class="card results">
                   <div class="results-top">
@@ -86,63 +128,66 @@
                       <b class="font-subhead">Email</b>
                     </div>
                   </div>
-                  <div class="result">
-                    <div class="flex-2">
-                      Juan Rosero
+                  <template is="dom-repeat" items="[[results]]">
+                    <div class="result">
+                      <div class="flex-2">
+                        [[item.firstName]] [[item.lastName]]
+                      </div>
+                      <span class="flex-2 link" on-tap="getUser">
+                        [[item.email]]
+                      </span>
                     </div>
-                    <a class="flex-2" on-tap="selectUser">
-                      jfrosero@udlanet.ec
-                    </a>
-                  </div>
+                  </template>
                   <div class="p1"></div>
                 </div>
               </div>
-              <div class="flex p1-l vertical relative">
-                <div class="overlay vertical center" hidden>
+              <div class="flex p2-l vertical relative">
+                <div class="overlay vertical center" hidden="[[!loading]]">
                   <paper-spinner active></paper-spinner>
                 </div>
-                <span class="font-display1 self-end">Juan Rosero</span>
-                <paper-card heading="Información">
-                  <div class="card-content">
-                    <span class="font-title">jfrosero@udlanet.ec</span>
-                    <div class="horizontal self-end">
-                      <div class="flex vertical">
-                        <div class="flex"></div>
-                        <span class="accent">Suscrito hasta el 12/12/2033</span>
-                        <span class="error">Sin suscripción</span>
+                <span class="font-display1 self-end">[[su.firstName]] [[su.lastName]]</span>
+                <div class="vertical center flex" hidden="[[su.id]]">
+                  <span class="font-headline">
+                    Selecciona un usuario para ver su información
+                  </span>
+                </div>
+                <div class="vertical" hidden="[[!su.id]]">
+                  <paper-card heading="Información" >
+                    <div class="card-content">
+                      <span class="font-title">[[su.email]]</span>
+                      <div class="horizontal self-end">
+                        <div class="flex vertical">
+                          <div class="flex"></div>
+                          <span class="accent" hidden="[[!su.isSubs]]">Suscrito hasta el: [[su.subscribedUntil]]</span>
+                          <span class="error" hidden="[[su.isSubs]]">Sin suscripción</span>
+                        </div>
+                        <div class="vertical">
+                          <span class="font-caption">Saldo</span>
+                          <span class="font-title">[[su.balance]] BTC</span>
+                        </div>
                       </div>
-                      <div class="vertical">
-                        <span class="font-caption">Saldo</span>
-                        <span class="font-title">0.0004 BTC</span>
+                    </div>
+                  </paper-card>
+                  <paper-card heading="Recomendados" class="m2-t">
+                    <div class="card-content vertical">
+                      <template is="dom-repeat" items="[[su.recommended]]">
+                        <div class="horizontal">
+                          <span class="flex">[[item.firstName]] [[item.lastName]]</span>
+                          <span class="flex link" on-tap="getUser">[[item.email]]</span>
+                        </div>
+                      </template>
+                    </div>
+                    <div class="card-content vertical">
+                      <span class="font-title">Máximo de recomendados</span>
+                      <div class="horizontal">
+                        <paper-slider min="3" max="24" value="[[su.maxReco]]" snaps step="3" pin editable class="flex" id="maxRecoSelector"></paper-slider>
                       </div>
                     </div>
-                  </div>
-                </paper-card>
-                <paper-card heading="Recomendados" class="m1-t">
-                  <div class="card-content vertical">
-                    <div class="horizontal">
-                      <a href="" class="flex font-subhead">Juan Rosero</a>
-                      <span>jfrosero@udlanet.ec</span>
+                    <div class="card-actions vertical">
+                      <paper-button class="accent self-end" on-tap="updateUserMr">Actualizar</paper-button>
                     </div>
-                    <div class="horizontal">
-                      <a href="" class="flex font-subhead">Juan Rosero</a>
-                      <span>jfrosero@udlanet.ec</span>
-                    </div>
-                    <div class="horizontal">
-                      <a href="" class="flex font-subhead">Juan Rosero</a>
-                      <span>jfrosero@udlanet.ec</span>
-                    </div>
-                  </div>
-                  <div class="card-content vertical">
-                    <span class="font-title">Máximo de recomendados</span>
-                    <div class="horizontal">
-                      <paper-slider min="3" max="24" value="3" snaps step="3" pin editable class="flex"></paper-slider>
-                    </div>
-                  </div>
-                  <div class="card-actions vertical">
-                    <paper-button class="accent self-end">Actualizar</paper-button>
-                  </div>
-                </paper-card>
+                  </paper-card>
+                </div>
               </div>
             </div>
           </section>
@@ -151,22 +196,83 @@
     </app-drawer-layout>
   </template>
   <script>
-    class AccountView extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],Polymer.Element) {
+    class AccountView extends SearchMixin(GlobalStoreMixin(Polymer.Element)) {
       static get is() {return 'account-view';}
       static get properties(){
         return {
-          route:String,
-          page:String,
+          su:{
+            type:Object,
+            statePath:(state)=>{
+              var user = Object.assign({},state.search.users.selectedUser);
+              user.isSubs = user.subscribedUntil==null ? false :  Date.compare(new Date(this.subscribedUntil), Date.today()) >= 0;
+              user.subscribedUntil= (new Date(user.subscribedUntil)).toFormat('DD-MM-YYYY');
+              return user;
+            }
+          },
           results:{
             type:Array,
             statePath:'search.users.entities'
-          }
+          },
+          query:{
+            type:Object,
+            value:()=>{
+              return {
+                email:null,
+                firstName:null,
+                lastName:null
+              }
+            }
+          },
+          stats:{
+            type:Object,
+            statePath:'search.stats'
+          },
+          loading:{
+            type:Boolean,
+            value:false
+          },
+          route:String,
+          page:String
         }
       }
       static get observers() {
         return [
           '_routePageChanged(routeData.page)',
         ];
+      }
+      searchStats(){
+        this.dispatch('getStats',(e)=>{
+          if(e)return showMessage('No pudimos obtener las estadísticas');
+        })
+      }
+      searchUsers(){
+        var query={};
+        Object.keys(this.query).forEach((key)=>{
+          if(this.query[key]){
+            query[key]=this.query[key];
+          }
+        });
+        this.dispatch('searchUsers',query,(e)=>{
+          if(e)return showMessage('Error en la búsqueda');
+        });
+      }
+      getUser(e){
+        var id = e.model.__data.item.id;
+        this.selectUser(id);
+      }
+      selectUser(id){
+        this.loading=true;
+        this.dispatch('selectUser',id,(e)=>{
+          this.loading=false;
+          if(e)return showMessage('Error obteniendo la información del usuario');
+        });
+      }
+      updateUserMr(){
+        var newMr = parseInt(this.$.maxRecoSelector.value);
+        this.dispatch('updateUserMr',this.su.id,newMr,(e)=>{
+          if(e)return showMessage('Error actualizando el MR');
+          return showMessage('Usuario actualizado.');
+        });
       }
       _routePageChanged(page){
         if(page===undefined){

@@ -1,6 +1,6 @@
 <script>
 const statsSearch = (state,action)=>{
-  switch (action.case) {
+  switch (action.type) {
     case 'LOAD_STATS':
       return Object.assign({},state.stats,action.stats);
       break;
@@ -14,24 +14,11 @@ const userSearch = (state,action)=>{
       return Object.assign({},state,{entities:action.users});
       break;
     case 'UPDATE_USER':
-      var newSelectedUser=Object.assign({},state.selectedUser);
-      var newEntities = state.entities.reduce((res,user)=>{
-        if(user.id===action.id){
-          user= Object.assign({},user,action.updates);
-          newSelectedUser=user;
-        }
-        return res.push(user);
-      },[]);
-      return Object.assign({},state,{entities:newEntities,selectedUser:newSelectedUser});
+      var newSelectedUser=Object.assign({},state.selectedUser,action.updates);
+      return Object.assign({},state,{selectedUser:newSelectedUser});
       break;
     case 'SELECT_USER':
-      var newSelected = state.entities.reduce((res,user)=>{
-        if(user.id===action.id){
-          res=user;
-        }
-        return res;
-      },state.selectedUser);
-      return Object.assign({},state,{selectedUser:newSelected});
+      return Object.assign({},state,{selectedUser:Object.assign({},action.selectedUser)});
       break;
     default:
       return state;
@@ -43,7 +30,7 @@ const search=(state,action)=>{
   return {
     stats:statsSearch(state.stats,action),
     users:userSearch(state.users,action)
-  }  
+  }
 }
 
 

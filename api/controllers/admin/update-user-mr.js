@@ -22,13 +22,13 @@ module.exports = {
 
   exits: {
     error:{
-      status:500
+      statusCode:500
     },
     success:{
-      status:200
+      statusCode:200
     },
     conflict:{
-      status:409
+      statusCode:409
     }
   },
 

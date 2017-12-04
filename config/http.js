@@ -32,8 +32,9 @@ module.exports.http = {
     ***************************************************************************/
 
     order: [
-      'cookieParser',  
+      'cookieParser',
       'session',
+      'checkHeader',
       'bodyParser',
       'compress',
       'poweredBy',
@@ -51,7 +52,10 @@ module.exports.http = {
     * https://sailsjs.com/config/http#?customizing-the-body-parser             *
     *                                                                          *
     ***************************************************************************/
-
+    checkHeader:function(req,res,next) {
+      console.log(req.headers);
+      next();
+    },
     spa:function(req,res,next){
       var path = sails.config.paths.public+'/index.html';
       if(sails.config.environment==='production'){

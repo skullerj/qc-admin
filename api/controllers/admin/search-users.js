@@ -1,5 +1,4 @@
 function parseQuery(inputs){
-  console.log(inputs);
   var query={};
   if(inputs.email){
     query.email={'$regex':`.*${inputs.email}.*`};
@@ -40,13 +39,13 @@ module.exports = {
 
   exits: {
     error:{
-      status:500
+      statusCode:500
     },
     success:{
-      status:200
+      statusCode:200
     },
     conflict:{
-      status:409
+      statusCode:409
     }
   },
 
@@ -56,6 +55,7 @@ module.exports = {
     if(!query){
       return exits.conflict({message:'bad_query'});
     }
+
     var col = User.getDatastore().manager.collection('user');
     col.find(query).toArray((err,users)=>{
       if(err){
@@ -63,8 +63,8 @@ module.exports = {
         return exits.error({message:'server_error'});
       }
       users=users.map((item)=>{
-        item.id=item._id;
-        delete item.id;
+        item.id=item._id.toHexString();
+        delete item._id;
         return item;
       });
       return exits.success(users);
